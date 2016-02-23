@@ -1,0 +1,5 @@
+#ignore idea config
+.idea/
+#ignore the output file
+target
+
