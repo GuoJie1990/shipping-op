@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jeeplus.modules.project.dao.ShippingProjectDao">
+    
+	<sql id="shippingProjectColumns">
+		a.id AS "id",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.client_id AS "clientId",
+		a.ship_name AS "shipName",
+		a.on_load AS "onLoad",
+		a.off_load AS "offLoad",
+		a.commencing_day AS "commencingDay",
+		a.cancelling_day AS "cancellingDay",
+		a.cargo_name AS "cargoName",
+		a.cargo_weight AS "cargoWeight",
+		a.init_charge AS "initCharge",
+		a.contract AS "contract",
+		a.hire AS "hire"
+	</sql>
+	
+	<sql id="shippingProjectJoins">
+	</sql>
+    
+	<select id="get" resultType="ShippingProject">
+		SELECT 
+			<include refid="shippingProjectColumns"/>
+		FROM t_project a
+		<include refid="shippingProjectJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="ShippingProject">
+		SELECT 
+			<include refid="shippingProjectColumns"/>
+		FROM t_project a
+		<include refid="shippingProjectJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="ShippingProject">
+		SELECT 
+			<include refid="shippingProjectColumns"/>
+		FROM t_project a
+		<include refid="shippingProjectJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO t_project(
+			id,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag,
+			client_id,
+			ship_name,
+			on_load,
+			off_load,
+			commencing_day,
+			cancelling_day,
+			cargo_name,
+			cargo_weight,
+			init_charge,
+			contract,
+			hire
+		) VALUES (
+			#{id},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag},
+			#{clientId},
+			#{shipName},
+			#{onLoad},
+			#{offLoad},
+			#{commencingDay},
+			#{cancellingDay},
+			#{cargoName},
+			#{cargoWeight},
+			#{initCharge},
+			#{contract},
+			#{hire}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE t_project SET 	
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+			client_id = #{clientId},
+			ship_name = #{shipName},
+			on_load = #{onLoad},
+			off_load = #{offLoad},
+			commencing_day = #{commencingDay},
+			cancelling_day = #{cancellingDay},
+			cargo_name = #{cargoName},
+			cargo_weight = #{cargoWeight},
+			init_charge = #{initCharge},
+			contract = #{contract},
+			hire = #{hire}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!--物理删除-->
+	<update id="delete">
+		DELETE FROM t_project
+		WHERE id = #{id}
+	</update>
+	
+	<!--逻辑删除-->
+	<update id="deleteByLogic">
+		UPDATE t_project SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!-- 根据实体名称和字段名称和字段值获取唯一记录 -->
+	<select id="findUniqueByProperty" resultType="ShippingProject" statementType="STATEMENT">
+		select * FROM t_project  where ${propertyName} = '${value}'
+	</select>
+</mapper>
